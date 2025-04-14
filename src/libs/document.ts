@@ -71,6 +71,14 @@ export interface BookDoc {
   getCover(): Promise<Blob | null>;
 }
 
+export enum SupportedFileFormats {
+  EPUB = 'epub',
+  MOBI = 'mobi',
+  CBZ = 'cbz',
+  FB2 = 'fb2',
+  FBZ = 'fbz',
+}
+
 export const EXTS: Record<BookFormat, string> = {
   EPUB: 'epub',
   PDF: 'pdf',
@@ -88,15 +96,8 @@ export class DocumentLoader {
   }
 
   private async isZip(): Promise<boolean> {
-    const arr = new Uint8Array(await this.file.slice(0, 4).arrayBuffer());
-    return arr[0] === 0x50 && arr[1] === 0x4b && arr[2] === 0x03 && arr[3] === 0x04;
-  }
-
-  private async isPDF(): Promise<boolean> {
-    const arr = new Uint8Array(await this.file.slice(0, 5).arrayBuffer());
-    return (
-      arr[0] === 0x25 && arr[1] === 0x50 && arr[2] === 0x44 && arr[3] === 0x46 && arr[4] === 0x2d
-    );
+    const signature = new Uint8Array(await this.file.slice(0, 4).arrayBuffer());
+    return signature[0] === 0x50 && signature[1] === 0x4b && signature[2] === 0x03 && signature[3] === 0x04;
   }
 
   private async makeZipLoader() {
@@ -170,23 +171,19 @@ export class DocumentLoader {
   }
 
   public async open(): Promise<{ book: BookDoc; format: BookFormat }> {
-    let book = null;
     let format: BookFormat = 'EPUB';
-    if (!this.file.size) {
-      throw new Error('File is empty');
-    }
+    let book: BookDoc | null = null;
+
     if (await this.isZip()) {
       const loader = await this.makeZipLoader();
-      const { entries } = loader;
-
       if (this.isCBZ()) {
-        const { makeComicBook } = await import('foliate-js/comic-book.js');
-        book = await makeComicBook(loader, this.file);
+        const { makeCBZ } = await import('foliate-js/comic-book.js');
+        const blob = await this.file.arrayBuffer();
+        book = await makeCBZ(blob);
         format = 'CBZ';
       } else if (this.isFBZ()) {
-        const entry = entries.find((entry) => entry.filename.endsWith(`.${EXTS.FB2}`));
-        const blob = await loader.loadBlob((entry ?? entries[0]!).filename);
         const { makeFB2 } = await import('foliate-js/fb2.js');
+        const blob = await this.file.arrayBuffer();
         book = await makeFB2(blob);
         format = 'FBZ';
       } else {
@@ -194,10 +191,6 @@ export class DocumentLoader {
         book = await new EPUB(loader).init();
         format = 'EPUB';
       }
-    } else if (await this.isPDF()) {
-      const { makePDF } = await import('foliate-js/pdf.js');
-      book = await makePDF(this.file);
-      format = 'PDF';
     } else if (await (await import('foliate-js/mobi.js')).isMOBI(this.file)) {
       const fflate = await import('foliate-js/vendor/fflate.js');
       const { MOBI } = await import('foliate-js/mobi.js');

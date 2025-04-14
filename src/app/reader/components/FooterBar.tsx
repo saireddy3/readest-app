@@ -128,7 +128,7 @@ const FooterBar: React.FC<FooterBarProps> = ({
   };
 
   const isVisible = hoveredBookKey === bookKey;
-  const progressInfo = bookFormat === 'PDF' ? section : pageinfo;
+  const progressInfo = ['CBZ'].includes(bookFormat) ? section : pageinfo;
   const progressValid = !!progressInfo;
   const progressFraction = progressValid
     ? ((progressInfo!.next ?? progressInfo!.current) + 1) / progressInfo!.total

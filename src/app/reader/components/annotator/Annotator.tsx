@@ -155,22 +155,20 @@ const Annotator: React.FC<{ bookKey: string }> = ({ bookKey }) => {
       // Available on iOS, on Android fired after an additional touch event
       isTouchstarted.current = false;
     };
-    if (bookData.book?.format !== 'PDF') {
-      detail.doc?.addEventListener('pointerup', handlePointerup);
-      detail.doc?.addEventListener('touchstart', handleTouchstart);
-      detail.doc?.addEventListener('touchmove', handleTouchmove);
-      detail.doc?.addEventListener('touchend', handleTouchend);
-      detail.doc?.addEventListener('selectionchange', handleSelectionchange);
+    detail.doc?.addEventListener('pointerup', handlePointerup);
+    detail.doc?.addEventListener('touchstart', handleTouchstart);
+    detail.doc?.addEventListener('touchmove', handleTouchmove);
+    detail.doc?.addEventListener('touchend', handleTouchend);
+    detail.doc?.addEventListener('selectionchange', handleSelectionchange);
 
-      // Disable the default context menu on mobile devices,
-      // although it should but doesn't work on iOS
-      if (appService?.isMobile) {
-        detail.doc?.addEventListener('contextmenu', (event: Event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          return false;
-        });
-      }
+    // Disable the default context menu on mobile devices,
+    // although it should but doesn't work on iOS
+    if (appService?.isMobile) {
+      detail.doc?.addEventListener('contextmenu', (event: Event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      });
     }
   };
 

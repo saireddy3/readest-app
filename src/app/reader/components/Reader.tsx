@@ -17,7 +17,7 @@ import Spinner from '@/components/Spinner';
 import { Book } from '@/types/book';
 
 // Static book URL - you can change this to any supported book URL
-const BOOK_URL = 'https://cdn.readest.com/books/the-great-gatsby.epub';
+const BOOK_URL = 'https://cdn.readest.com/books/the-scarlet-letter.epub';
 
 const Reader: React.FC = () => {
   const { envConfig, appService } = useEnv();

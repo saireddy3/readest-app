@@ -99,13 +99,6 @@ const TTSControl = () => {
     const viewSettings = getViewSettings(bookKey);
     const bookData = getBookData(bookKey);
     if (!view || !viewSettings || !bookData) return;
-    if (bookData.book?.format === 'PDF') {
-      eventDispatcher.dispatch('toast', {
-        message: _('TTS not supported for PDF'),
-        type: 'warning',
-      });
-      return;
-    }
 
     setBookKey(bookKey);
 
@@ -305,6 +298,16 @@ const TTSControl = () => {
 
   const handleDismissPopup = () => {
     setShowPanel(false);
+  };
+
+  // Request to toggle the TTS module state on/off
+  const toggleTTS = () => {
+    if (!ttsActive) {
+      setTtsActive(true);
+    } else {
+      setTtsActive(false);
+      stopSpeaking();
+    }
   };
 
   return (

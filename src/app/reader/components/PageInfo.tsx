@@ -27,7 +27,8 @@ const PageInfoView: React.FC<PageInfoProps> = ({
 }) => {
   const _ = useTranslation();
   const { appService } = useEnv();
-  const pageInfo = ['PDF', 'CBZ'].includes(bookFormat)
+  const isFixedPage = ['CBZ'].includes(bookFormat);
+  const pageInfo = isFixedPage
     ? section
       ? isVertical
         ? `${section.current + 1} · ${section.total}`

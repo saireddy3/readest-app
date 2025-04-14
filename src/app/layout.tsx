@@ -11,11 +11,9 @@ export const metadata = {
   title,
   description,
   generator: 'Next.js',
-  manifest: '/manifest.json',
-  keywords: ['epub', 'pdf', 'ebook', 'reader', 'readest', 'pwa'],
+  keywords: ['epub', 'ebook', 'reader', 'readest'],
   authors: [{ name: 'readest', url: 'https://github.com/readest/readest' }],
   icons: [
-    { rel: 'apple-touch-icon', url: '/apple-touch-icon.png' },
     { rel: 'icon', url: '/favicon.ico' },
   ],
 };

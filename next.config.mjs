@@ -1,4 +1,3 @@
-import withPWAInit from '@ducanh2912/next-pwa';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -24,28 +23,11 @@ const nextConfig = {
   trailingSlash: false,
   // Add webpack config for module resolution
   webpack: (config, { isServer }) => {
-    // Add an alias for the @pdfjs module
-    config.resolve.alias['@pdfjs'] = path.join(__dirname, 'public/vendor/pdfjs');
-    
-    // Add alias to map foliate-js to foliatejs
-    config.resolve.alias['foliate-js'] = path.join(__dirname, 'node_modules/foliatejs');
+    // Add alias to map foliate-js to @shmandadi/foliate-js
+    config.resolve.alias['foliate-js'] = path.join(__dirname, 'node_modules/@shmandadi/foliate-js');
     
     return config;
   },
 };
 
-const withPWA = withPWAInit({
-  dest: 'public',
-  disable: isDev || appPlatform !== 'web',
-  cacheOnFrontEndNav: true,
-  aggressiveFrontEndNavCaching: true,
-  reloadOnOnline: true,
-  swcMinify: true,
-  fallbacks: {
-  },
-  workboxOptions: {
-    disableDevLogs: true,
-  },
-});
-
-export default withPWA(nextConfig);
+export default nextConfig;
